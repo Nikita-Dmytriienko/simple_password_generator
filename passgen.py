@@ -2,18 +2,17 @@ import argparse
 import secrets
 import string
 
-ALL_LETTERS = string.ascii_letters
-DIGITS = string.digits
-SPECIAL = string.punctuation
 
-FULL_POOL = ALL_LETTERS + DIGITS + SPECIAL
-LETTERS_ONLY = ALL_LETTERS
-LETTERS_DIGITS = ALL_LETTERS + DIGITS
-LETTERS_SPECIAL = ALL_LETTERS + SPECIAL
-
-
-
-parser = argparse.ArgumentParser(description="Password Generator CLI")
+parser = argparse.ArgumentParser(description="Password Generator CLI",
+epilog="Examples:\n"
+            "  python passgen.py \n"
+            "  python passgen.py -l 20 \n"
+            "  python passgen.py -l 16 --no-digits \n"
+            "  python passgen.py -l 8 --no-special \n"
+            "  python passgen.py -c 5 \n"
+            "  python passgen.py -l 16 -c 3 \n",
+    formatter_class=argparse.RawDescriptionHelpFormatter
+)
 
 parser.add_argument(
     "-l",
@@ -21,12 +20,6 @@ parser.add_argument(
     default=12,
     type=int,
     help="Password length is 12 by default",
-    epilog="Examples:\n"
-    "python passgen.py\n"
-    "  python passgen.py -l 20\n"
-    "  python passgen.py -l 16 --no-digits\n"
-    "  python passgen.py -c 5 -l 12 --no-special\n",
-    formatter_class=argparse.RawDescriptionHelpFormatter
 )
 parser.add_argument(
       "-c",
@@ -51,31 +44,30 @@ group.add_argument("--no-digits-and-special", action="store_true")
 
 args = parser.parse_args()
 
+characters = string.ascii_letters
+
 # VALIDATION
-if args.no_digits_and_special:
-        pool = LETTERS_ONLY
-    elif args.no_digits:
-        pool = LETTERS_SPECIAL
-    elif args.no_special:
-        pool = LETTERS_DIGITS
-    else:
-        pool = FULL_POOL
+if not args.no_digits and not args.no_digits_and_special:
+    characters += string.digits
+
+    if not args.no_special and not args.no_digits_and_special:
+        characters += string.punctuation
 
 
-if len(pool) == 0:
+if len(characters) == 0:
     parser.error("Empty")
 
 if args.length <= 4:
     parser.error("Too short length for password")
 
 for i in range(args.count):
-        password = ''.join(secrets.choice(pool) for _ in range(args.length))
+        password = ''.join(secrets.choice(characters) for _ in range(args.length))
 
         if args.verbosity == 0:
-            print(f"Your password#{i} is {password}")
+            print(f"\nYour password#{i+1}:\n{password} -> {args.length} length")
 
         elif args.verbosity == 1:
-            print(f"Your password#{i} is {password}")
+            print(f"Your password#{i}:{password}")
 
          # elif args.verbosity >= 2:
          #     if args.
@@ -84,9 +76,4 @@ for i in range(args.count):
          # elif args.verbosity >= 3:
          #
          #
-         # elif args.verbosity == 4:
-         #
-         #
-         # else: # args.verbosity == 5
-
         print()
