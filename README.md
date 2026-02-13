@@ -1,32 +1,42 @@
-ТЗ: Password Generator CLI
+# Simple Password Generator
 
-Что должна делать программа:
-Пользователь запускает скрипт из терминала и получает сгенерированный пароль.
-Параметры задаются через аргументы командной строки.
-Примеры использования:
-python passgen.py                     → пароль 12 символов (по умолчанию)
-python passgen.py -l 20               → пароль 20 символов
-python passgen.py -l 16 --no-digits   → без цифр
-python passgen.py -l 8 --no-special   → без спецсимволов
-python passgen.py -c 5                → сгенерировать 5 паролей
-python passgen.py -l 16 -c 3          → 3 пароля по 16 символов
+A command-line tool for generating secure random passwords.
 
+## Usage
 
-Обязательные фичи:
+Basic usage:
+```bash
+python passgen.py
+```
 
-1.Аргумент -l / --length — длина пароля (по умолчанию 12)
-2.Аргумент -c / --count — количество паролей (по умолчанию 1)
-3.Флаг --no-digits — исключить цифры
-4.Флаг --no-special — исключить спецсимволы
-5.Флаг --no-digits-and-special - исключить и цифры и спецсимволы
-Валидация: длина не меньше 4, count не меньше 1
-Красивый вывод в терминал
+### Options
 
-Что тебе понадобится изучить:
+- `-l, --length` - Password length (default: 12)
+- `-c, --count` - Number of passwords to generate (default: 1)
+- `--no-digits` - Exclude numbers
+- `--no-special` - Exclude special characters
+- `--no-digits-and-special` - Exclude both numbers and special characters
 
-Модуль random (конкретно secrets — безопаснее для паролей, подумай почему)
-Модуль argparse — как парсить аргументы командной строки
-Модуль string — там есть ascii_letters, digits, punctuation
+### Examples
 
+```bash
+# Generate a 20-character password
+python passgen.py -l 20
 
+# Generate 5 passwords
+python passgen.py -c 5
 
+# Generate a password without digits
+python passgen.py -l 16 --no-digits
+
+# Generate 3 passwords, 16 characters each
+python passgen.py -l 16 -c 3
+```
+
+## Requirements
+
+- Python 3.x
+
+## Security
+
+This tool uses Python's `secrets` module for cryptographically secure random generation.
